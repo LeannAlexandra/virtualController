@@ -3,7 +3,7 @@ CC := gcc
 CXX := g++
 CFLAGS := -Wall -I./include
 CXXFLAGS := -Wall -I./include
-LDFLAGS := -L./lib -ludev  # Link against libudev
+LDFLAGS := -L./lib -ludev
 LDLIBS := -lm
 
 # Directories
@@ -19,7 +19,7 @@ CXXOBJECTS := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(CXXSOURCES))
 
 # Executable names
 EXECUTABLE := virtualController
-UDEV_EXECUTABLE := udevInfo  # Name of the new program using libudev
+UDEV_EXECUTABLE := udevInfo
 
 # Targets
 all: $(EXECUTABLE) $(UDEV_EXECUTABLE)
@@ -27,7 +27,7 @@ all: $(EXECUTABLE) $(UDEV_EXECUTABLE)
 $(EXECUTABLE): $(COBJECTS) $(CXXOBJECTS)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-$(UDEV_EXECUTABLE): udev_info.c  # Assuming you have a separate .c file for the libudev program
+$(UDEV_EXECUTABLE): $(OBJDIR)/udev_info.o
 	$(CC) $(CFLAGS) -o $@ $^ -ludev
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
