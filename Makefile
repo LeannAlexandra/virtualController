@@ -22,7 +22,8 @@ EXECUTABLE := virtualController
 UDEV_EXECUTABLE := udevInfo
 
 # Targets
-all: $(EXECUTABLE) $(UDEV_EXECUTABLE)
+all: $(EXECUTABLE) 
+# $(UDEV_EXECUTABLE)
 
 $(EXECUTABLE): $(COBJECTS) $(CXXOBJECTS)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
@@ -39,6 +40,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf $(OBJDIR) $(EXECUTABLE) $(UDEV_EXECUTABLE)
+	rm -rf $(OBJDIR) $(EXECUTABLE) 
+# $(UDEV_EXECUTABLE)
 
 .PHONY: all clean

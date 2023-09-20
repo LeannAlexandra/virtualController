@@ -1,123 +1,96 @@
+
+#include <fcntl.h>
+#include <linux/uinput.h>
 #include <stdio.h>
-#include <libudev.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-int notmain() {
-    // Create a udev context
-    struct udev *udev = udev_new();
-    if (!udev) {
-        fprintf(stderr, "Failed to create udev context\n");
-        return 1;
+// Function declaration for finding the event number
+int findEventNumber(const char *deviceName, char *eventNumber,
+                    size_t eventNumberSize);
+
+int main() {
+  // Open and read the configuration file
+  FILE *file = fopen("conf/config.conf", "r");
+  if (file == NULL) {
+    perror("Error opening config file");
+    return 1;
+  }
+
+  // Initialize variables to store configuration values
+  char device[256];
+  int virtualControllers = 0;
+  char eventNumber[8]; // Adjust the size as needed
+
+  // Read and parse the configuration lines
+  char line[256];
+  while (fgets(line, sizeof(line), file)) {
+    // Remove trailing newline character
+    line[strcspn(line, "\n")] = '\0';
+
+    // Split the line into key and value
+    char *key = strtok(line, "=");
+    char *value = strtok(NULL, "=");
+
+    if (key && value) {
+      if (strcmp(key, "device") == 0) {
+        strncpy(device, value, sizeof(device));
+      } else if (strcmp(key, "virtual_controllers") == 0) {
+        virtualControllers = atoi(value);
+      }
+    }
+  }
+  // Close the configuration file
+  fclose(file);
+
+  // Print the parsed values
+  printf("Device: %s\n", device);
+  printf("Virtual Controllers: %d\n", virtualControllers);
+
+  // Call the function to find the event number
+  if (findEventNumber(device, eventNumber, sizeof(eventNumber)) != 0) {
+    // Handle the case where the device is not found
+    // ...
+    return 1; // Return an error code
+  }
+
+    printf("DEVICE's eventNumber from udev_info.c:   %s   \n",eventNumber);
+  // Use the event number to open the real input device
+  char devicePath[20];
+  snprintf(devicePath, sizeof(devicePath), "/dev/input/event%s", eventNumber);
+  int fd_real_device = open(devicePath, O_RDONLY | O_NONBLOCK);
+
+  if (fd_real_device < 0) {
+    perror("Error opening real input device");
+    return 1;
+  }
+
+  // Open virtual input devices (you'll need to create 4 of these)
+  int fd_virtual_device1 = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+  // ...
+
+  // Set up virtual devices (initialize them)
+  // ...
+
+  // Create a uinput event structure to hold input events
+  struct input_event ev;
+
+  while (1) {
+    // Capture input events from the real device
+    ssize_t n = read(fd_real_device, &ev, sizeof(ev));
+    if (n == sizeof(ev)) {
+      // Replicate the input event to all virtual devices
+      write(fd_virtual_device1, &ev, sizeof(ev));
+      // ...
     }
 
-    // Create a udev enumerator for input devices
-    struct udev_enumerate *enumerate = udev_enumerate_new(udev);
-    udev_enumerate_add_match_subsystem(enumerate, "input");
-    udev_enumerate_scan_devices(enumerate);
+    // Handle input event synchronization if needed
+    // ...
+  }
 
-    // Get a list of devices
-    struct udev_list_entry *devices = udev_enumerate_get_list_entry(enumerate);
-    struct udev_list_entry *entry;
+  // Close all open file descriptors and clean up
+  // ...
 
-    // Iterate through the list of devices
-    udev_list_entry_foreach(entry, devices) {
-        const char *syspath = udev_list_entry_get_name(entry);
-        struct udev_device *dev = udev_device_new_from_syspath(udev, syspath);
-
-        // Check if the device has a name attribute
-        const char *deviceName = udev_device_get_sysattr_value(dev, "name");
-        if (deviceName) {
-            printf("Device Name: %s (Event Device: %s)\n", deviceName, udev_device_get_devnode(dev));
-        }
-
-        udev_device_unref(dev);
-    }
-
-    // Cleanup
-    udev_enumerate_unref(enumerate);
-    udev_unref(udev);
-
-    return 0;
+  return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <dirent.h>
-// #include <string.h>
-// #include <unistd.h>
-// #include <fcntl.h>
-// #include <libudev.h>
-// #include <linux/input.h>
-
-// int isXboxSeriesSController(int fd) {
-//     struct input_id device_id;
-//     ioctl(fd, EVIOCGID, &device_id);
-    
-//     // Check if the VID and PID match those of the Xbox Series S controller
-//     if (device_id.vendor == 0x045e && device_id.product == 0x02d1) {
-//         return 1; // It's an Xbox Series S controller
-//     } else {
-//         return 0; // It's not an Xbox Series S controller
-//     }
-// }
-
-// int main() {
-//     DIR *dir;
-//     struct dirent *entry;
-
-//     dir = opendir("/dev/input");
-//     if (dir == NULL) {
-//         perror("opendir");
-//         return 1;
-//     }
-
-//     printf("Event\tPath\tID\n");
-
-//     while ((entry = readdir(dir))) {
-//         // Skip entries that are directories or have specific names
-//         if (entry->d_type == DT_DIR || strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 ||
-//             strcmp(entry->d_name, "by-id") == 0 || strcmp(entry->d_name, "by-path") == 0) {
-//             continue;
-//         }
-
-//         char device_path[256];
-//         snprintf(device_path, sizeof(device_path), "/dev/input/%s", entry->d_name);
-
-//         int fd = open(device_path, O_RDONLY | O_NONBLOCK);
-//         if (fd != -1) {
-//             char device_name[256];
-//             ioctl(fd, EVIOCGNAME(sizeof(device_name)), device_name);
-
-//             struct input_id device_id;
-//             ioctl(fd, EVIOCGID, &device_id);
-
-//             printf("%s\t%s\t%04x:%04x\n", entry->d_name, device_path, device_id.vendor, device_id.product);
-
-//             if (isXboxSeriesSController(fd)) {
-//                 printf("%s\t%s\t%04x:%04x (Xbox Series S Controller)\n", entry->d_name, device_path, 0x045e, 0x02d1);
-//             } else {
-//                 printf("%s\t%s\t%04x:%04x\n", entry->d_name, device_path, device_id.vendor, device_id.product);
-//             }
-
-        
-//             close(fd);
-
-
-
-//         }
-//     }
-
-//     closedir(dir);
-
-//     return 0;
-// }
