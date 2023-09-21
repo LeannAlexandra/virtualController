@@ -3,7 +3,7 @@ CC := gcc
 CXX := g++
 CFLAGS := -Wall -I./include
 CXXFLAGS := -Wall -I./include
-LDFLAGS := -L./lib -ludev
+LDFLAGS := -L./lib -ludev -lboost_system -lboost_filesystem
 LDLIBS := -lm
 
 # Directories
@@ -19,7 +19,7 @@ CXXOBJECTS := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(CXXSOURCES))
 
 # Executable names
 EXECUTABLE := virtualController
-UDEV_EXECUTABLE := udevInfo
+# UDEV_EXECUTABLE := udevInfo
 
 # Targets
 all: $(EXECUTABLE) 
@@ -28,8 +28,7 @@ all: $(EXECUTABLE)
 $(EXECUTABLE): $(COBJECTS) $(CXXOBJECTS)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-$(UDEV_EXECUTABLE): $(OBJDIR)/udev_info.o
-	$(CC) $(CFLAGS) -o $@ $^ -ludev
+# $(UDEV_EXECUTABLE): $(OBJDIR)/udev_info.o # $(CC) $(CFLAGS) -o $@ $^ -ludev
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(@D)
