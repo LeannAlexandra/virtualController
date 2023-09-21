@@ -4,18 +4,18 @@
 #include <stdlib.h>
 #include <string.h>
 // udev_info.c
-#include "controller.h"
+#include "../include/controller.h"
 
 Controller createTemplateController() {
-    Controller templateController;
-    // Initialize templateController with default configuration
-    // ...
+  Controller templateController;
+  // Initialize templateController with default configuration
+  // ...
 
-    return templateController;
+  return templateController; /// send this to main ? using it as if a class? and people say C doesn't have class... ;)
 }
 
 // Function to print detailed information about a udev device
-void printDeviceInfo(struct udev_device *dev) {
+void printDeviceInfo(struct udev_device *dev, ...) {
   if (!dev) {
     fprintf(stderr, "Device is NULL\n");
     return;
@@ -36,16 +36,25 @@ void printDeviceInfo(struct udev_device *dev) {
   udev_list_entry_foreach(entry, capabilities) {
     const char *name = udev_list_entry_get_name(entry);
     const char *value = udev_list_entry_get_value(entry);
+    printf("Capabilities:\n");
+    udev_list_entry_foreach(entry, capabilities) {
+      const char *name = udev_list_entry_get_name(entry);
+      const char *value = udev_list_entry_get_value(entry);
+
+      printf("  %s=%s\n", name, value);
+    }
     printf("  %s=%s\n", name, value);
   }
 }
+// char* findDevPath(){}
 // Function to find and return the event number for a given device name
 int findEventNumber(struct udev_device *dev, char *eventNumber,
                     size_t eventNumberSize) {
   // Check if the device has a name attribute
   const char *deviceName = udev_device_get_sysattr_value(dev, "name");
-  printf("Checking device: %s\n", deviceName);
-  printDeviceInfo(dev);
+  char* devPath;
+  // printf("Checking device: %s\n", deviceName);
+  printDeviceInfo(dev, &devPath);
 
   if (deviceName && strcmp(deviceName, deviceName) == 0) {
     // Found a matching device
@@ -65,13 +74,10 @@ int findEventNumber(struct udev_device *dev, char *eventNumber,
   return -1; // Device not found
 }
 
-
-
 // #include <libudev.h>
 // #include <stdio.h>
 // #include <stdlib.h>
 // #include <string.h>
-
 
 // // Function to find and return the event number for a given device name
 // int findEventNumber(const char *deviceName, char *eventNumber,
@@ -101,10 +107,11 @@ int findEventNumber(struct udev_device *dev, char *eventNumber,
 //     struct udev_device *dev = udev_device_new_from_syspath(udev, syspath);
 
 //         // Check if the device has a name attribute
-//         const char *currentDeviceName = udev_device_get_sysattr_value(dev, "name");
-//         printf("Checking device: %s\n", currentDeviceName);
+//         const char *currentDeviceName = udev_device_get_sysattr_value(dev,
+//         "name"); printf("Checking device: %s\n", currentDeviceName);
 //         printDeviceInfo(dev);
-//         if (currentDeviceName && strcmp(currentDeviceName, deviceName) == 0) {
+//         if (currentDeviceName && strcmp(currentDeviceName, deviceName) == 0)
+//         {
 //         // Found a matching device
 //         printDeviceInfo(dev);
 //         found = 1;
@@ -152,8 +159,8 @@ int findEventNumber(struct udev_device *dev, char *eventNumber,
 //       }
 //     }
 
-//     // Print a list of available devices here (similar to your original output)
-//     return -1;
+//     // Print a list of available devices here (similar to your original
+//     output) return -1;
 //   }
 
 //   // Cleanup
