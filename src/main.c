@@ -11,12 +11,12 @@ int main() {
     // Open the original input device (event11) for reading
     int fd_real_device = open("/dev/input/event11", O_RDONLY | O_NONBLOCK);
     if (fd_real_device < 0) {
-        perror("Error opening real input device");
+        perror("Error opening real input device - consider seeing if it is connected or set up correctly in config.conf by using `evtest`");
         return 1;
     }
  // Use EVIOCGRAB to "grab" the original input device
     if (ioctl(fd_real_device, EVIOCGRAB, 1) < 0) {
-        perror("Error grabbing real input device");
+        perror("Error grabbing real input device - abort the mission");
         return 1;
     }
     // Create and configure virtual input devices
@@ -28,7 +28,7 @@ int main() {
         // Open virtual input devices for writing
         fd_virtual_devices[i] = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
         if (fd_virtual_devices[i] < 0) {
-            perror("Error opening virtual input device");
+            perror("Error opening virtual input device - abort the mission");
             return 1;
         }
 
@@ -65,7 +65,7 @@ int main() {
 
 
 
-        
+
         // Handle input event synchronization or other logic if needed
         // ...
     }
