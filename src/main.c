@@ -212,7 +212,7 @@ int main(int argc, char *argv[]) {
     setup.id.bustype = BUS_USB;
     setup.id.vendor = 0x45e;  // Microsoft Vendor ID (modify as needed)
     setup.id.product = 0x2ea; // Product ID (modify as needed)
-    snprintf(setup.name, UINPUT_MAX_NAME_SIZE, "Virtual Controller %d", i);
+    snprintf(setup.name, UINPUT_MAX_NAME_SIZE, "aiPlayer %d", i);
     ioctl(fd_virtual_devices[i], UI_DEV_SETUP, &setup);
     ioctl(fd_virtual_devices[i], UI_DEV_CREATE);
   }
