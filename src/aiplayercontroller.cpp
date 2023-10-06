@@ -1,3 +1,4 @@
+//LeAnn Alexandra 2023
 // aiplayercontroller.cpp
 #include "../include/aiplayercontroller.hpp"
 #include <fcntl.h>
@@ -11,7 +12,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-// these will never change for XBOX controller.
+// these will never change for standard XBOX controller, they might for switch or the pro version, but my graphics card is 50+ years away from that technology 
 #define BUTTONS_ON_CONTROLLER 11
 #define ABS_VALUES_ON_CONTROLLER 8
 
@@ -53,7 +54,7 @@ AIPlayerController::AIPlayerController()
 
 
     // ABS_X and ABS_Y range from -1 to 1
-    abs_setup.code = button;
+    abs_setup.code = button;//LeAnn Alexandra 2023
     abs_setup.absinfo.maximum = 32767;
     abs_setup.absinfo.minimum = -32768;
     if (button == ABS_HAT0X || button == ABS_HAT0Y) // special case dpad

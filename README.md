@@ -1,4 +1,9 @@
-# virtualController
+
+# VirtualController
+
+<h2>Start Here</h2>
+this repository is the proof of concept site. 
+<!-- # virtualController
 <<<<<<< HEAD
 <img src="/res/controller-1784573_640.png">
 new version
@@ -49,4 +54,4 @@ In short: replicates my xbox controller in linux to register multiple virtual co
 <li>the eventX gets consumed by the emulator if you run emulator before my app. (this is emulator code, it cannot be freed even when closing the emulator.</li>
 <li>the known method to dynamically find X (has been deprecated) as it wasn't working, remnants of the output was logged in res/cripnote (it's a text file) </li></ul> 
 
-
+ -->
