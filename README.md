@@ -8,12 +8,14 @@ the main.c uses an input device to register 4 virtual devices (*currently linked
 the virtualController.hpp and virtualController.cpp were the precursors of aiplayercontroller.hpp and aiplayercontroller.cpp
 
 the important ones are 
-aiplayercontroller.hpp and aiplayercontroller.cpp
+**aiplayercontroller.hpp** and **aiplayercontroller.cpp**
 
 <h2>Current State</h2>
 the controller registers system wide, and registers input from the public functions and is observable in real time in the linux input window. 
 I do suspect that some values need to be changes - specifically the min & max of abs values should be mimicing the xbox controller of 16bit integers min & max 32767 & -32767 (although the int would be min of -32768) - the testing of these values have not yet influenced the project and rests on the /// TODO: stack.  
 
+<h2>future implementation</h2>
+The controller is made to be a systemwide registration of a controller to be controlled programmatically. The specific implementation scenario aims to give a controller to an ai to be able to "co-pilot" or player 2 in games. Also the controller is designed to be only ever actively change state. You'll have to explicitly press and explicitly release a button. 
 
 
 <!-- # virtualController
