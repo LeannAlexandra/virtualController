@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+
+///TODO: implement a better naming convention*
 // THE _A at the end indicates that the values need to be explicitly set. (ie
 // not a straightforward button)
 #define AIC_DPAD_X_A 0
@@ -36,15 +38,15 @@
 #define AIC_L3_B 7
 #define AIC_R3_B 8
 
-///TODO: UPDATE BUTTON LABELS!!! THEY ARE OUT OF ORDER CURENTLY
-const std::vector<std::string> button_label = {
-    "Y Button",     "X Button",    "B Button",      "A Button",
-    "Right Bumper", "Left Bumper", "Select Button", "Start Button",
-    "Elon Button",  "L3 Button",   "R3 Button"};
+///TODO: UPDATE BUTTON LABELS!!! THEY ARE OUT OF ORDER CURENTLY !!! make use of cli_control
+// const std::vector<std::string> button_label = {
+//     "Y Button",     "X Button",    "B Button",      "A Button",
+//     "Right Bumper", "Left Bumper", "Select Button", "Start Button",
+//     "Elon Button",  "L3 Button",   "R3 Button"};
 
-const std::vector<std::string> abs_label = {
-    "DPAD X",         "DPAD Y",         "Left Analog X", "Left Analog Y",
-    "Right Analog X", "Right Analog Y", "Left Trigger",  "Right Trigger"};
+// const std::vector<std::string> abs_label = {
+//     "DPAD X",         "DPAD Y",         "Left Analog X", "Left Analog Y",
+//     "Right Analog X", "Right Analog Y", "Left Trigger",  "Right Trigger"};
 
 struct State {
   std::vector<bool> buttonStates;    // Store button states
@@ -68,7 +70,7 @@ public:
   void clearControllerState();
   State getControllerState();
   void updateControllerState();
-  void sendKeyPress(int buttonIndex, int millisecond_duration);
+  void sendKeyPress(int buttonIndex, int millisecond_duration =150);
   void cli_control();// use cli to press buttons (calibrate controller) - it is still primitive, but it has potential
   // void setupAbsoluteAxes(int fd_virtual_device); 
 

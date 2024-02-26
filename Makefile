@@ -1,45 +1,60 @@
-# Compiler and flags
-CC := gcc
-CXX := g++
-CFLAGS := -Wall -I./include
-CXXFLAGS := -Wall -I./include
-LDFLAGS := -L./lib -ludev -lboost_system -lboost_filesystem
-LDLIBS := -lm
-
-# Directories
-SRCDIR := src
-OBJDIR := obj
-LIBDIR := lib
+# Compiler
+CC := g++
+# Compiler flags
+CFLAGS := -Wall -Wextra -std=c++11
+# Include directories
+INC_DIR := include
+# Source directories
+SRC_DIR := src
+# Object directories
+OBJ_DIR := obj
+# Binary directories
+BIN_DIR := bin
 
 # Source files
-CSOURCES := $(wildcard $(SRCDIR)/*.c)
-CXXSOURCES := $(wildcard $(SRCDIR)/*.cpp)
-COBJECTS := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(CSOURCES))
-CXXOBJECTS := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(CXXSOURCES))
+SRC := $(wildcard $(SRC_DIR)/*.cpp)
+# Object files
+OBJ := $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
-# Executable names
-EXECUTABLE := virtualController
-# UDEV_EXECUTABLE := udevInfo
+# Output executable
+TARGET := $(BIN_DIR)/test_controller
 
-# Targets
-all: $(EXECUTABLE) 
-# $(UDEV_EXECUTABLE)
+# Library name
+LIB_NAME := aiplayercontroller
 
-$(EXECUTABLE): $(COBJECTS) $(CXXOBJECTS)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+# Library file
+LIB := $(BIN_DIR)/lib$(LIB_NAME).a
 
-# $(UDEV_EXECUTABLE): $(OBJDIR)/udev_info.o # $(CC) $(CFLAGS) -o $@ $^ -ludev
+# Compiler flags for building the library
+LIB_FLAGS := -c
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c -o $@ $<
+# Include directories for compilation
+INC := -I$(INC_DIR)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+# Main target
+all: $(TARGET)
 
+# Rule to build the executable
+$(TARGET): $(OBJ) $(LIB)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) $(INC) $(OBJ) -o $@ -L$(BIN_DIR) -l$(LIB_NAME)
+
+# Rule to build the object files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(INC) $(LIB_FLAGS) $< -o $@
+
+# Rule to build the library
+$(LIB): $(OBJ)
+	@mkdir -p $(BIN_DIR)
+	ar rcs $@ $^
+
+# Phony target to clean the project
 clean:
-	rm -rf $(OBJDIR) $(EXECUTABLE) 
-# $(UDEV_EXECUTABLE)
+	$(RM) -r $(OBJ_DIR) $(BIN_DIR)
 
-.PHONY: all clean
+# Phony target to clean and build the project
+rebuild: clean all
+
+# Declare the phony targets
+.PHONY: all clean rebuild

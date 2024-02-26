@@ -1,45 +1,14 @@
 
-# VirtualController
+# VirtualController || AIPlayerController
 
-<h2>Start Here</h2>
-this repository is the archive of the proof of concept.
+The virtual controller is created as a system wide input device [currently only in my linux environment] that can be used like an api to control certain elements of movement or in games. currently it is kind of like a macro player but for a gaming controller. 
 
-the main.c uses an input device to register 4 virtual devices (*currently linked to conf/config.conf)
-the virtualController.hpp and virtualController.cpp were the precursors of aiplayercontroller.hpp and aiplayercontroller.cpp
+## How to use
+The main file shows you what you need to do in shorthand
+The Makefile is an overengineered masterpiece that will compile anything you put into the /src & /include folders. 
 
-the important ones are 
-**aiplayercontroller.hpp** and **aiplayercontroller.cpp**
+## Use Case: 
+- You have an idea for an ai to play a game! - now you can let controll it with code. 
+- You just want to enjoy a relaxing cup of coffee but you don't want to mess up your shiny hunting expedition, plus you're a purist and no cheat code || genned pokemon will cut it* - and this can do exactly that. (I'm working on that project btw) 
 
-<h2>Current State</h2>
-the controller registers system wide, and registers input from the public functions and is observable in real time in the linux input window. 
-I do suspect that some values need to be changes - specifically the min & max of abs values should be mimicing the xbox controller of 16bit integers min & max 32767 & -32767 (although the int would be min of -32768) - the testing of these values have not yet influenced the project and rests on the /// TODO: stack.  
-
-<h2>future implementation</h2>
-The controller is made to be a systemwide registration of a controller to be controlled programmatically. The specific implementation scenario aims to give a controller to an ai to be able to "co-pilot" or player 2 in games. Also the controller is designed to be only ever actively change state. You'll have to explicitly press and explicitly release a button. 
-
-
-<!-- # virtualController
-intercepts input controller to be duplicated to many virtual controllers<br>
-<img src="https://github.com/LeannAlexandra/virtualController/blob/main/assets/flow.png?raw=true" alt="flowchart_depiction">
-
-<h2>USE CASE:</h2>
-<ul>
-<li>play multiple instances emulator games at the same time </li>
-  <img src="https://github.com/LeannAlexandra/virtualController/blob/main/assets/mGBAexample.png?raw=true" alt="example_usage">
-  <li>use as a foundation for interesting XOR (and or) NAND controlling (when playing same game with a friend, this would requires 2 inputs and some extra coding, but it is possible:D ) </li>
-<li>What I really want to do is give control to an ai to do the same as above ;) - but each virtual controller will have additional inputs from ai ;D </li>
-</ul>
-
-<h2>How it works</h2>
- <img src="https://github.com/LeannAlexandra/virtualController/blob/main/assets/virtualcontroler_evtest.png?raw=true" alt="evtest proof">
-  <em>It just works</em> - Todd Howard<br>
-In short: replicates my xbox controller in linux to register multiple virtual controllers.
- <img src="https://github.com/LeannAlexandra/virtualController/blob/main/assets/evtestSync.gif?raw=true" alt="evtest example sync">
-
-<h2>Known Issues - for the one redditor who came on over</h2>
-
-<ul><li>the eventX has to be set manually using evtest, set to the config file</li>
-<li>the eventX gets consumed by the emulator if you run emulator before my app. (this is emulator code, it cannot be freed even when closing the emulator.</li>
-<li>the known method to dynamically find X (has been deprecated) as it wasn't working, remnants of the output was logged in res/cripnote (it's a text file) </li></ul> 
-
- -->
+*well if this is you, you are probably playing the OG game on the OG console. 

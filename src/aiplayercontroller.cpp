@@ -59,7 +59,7 @@ AIPlayerController::AIPlayerController()
       abs_setup.absinfo.maximum = 1;
       abs_setup.absinfo.minimum = -1;
     } else {
-      continue;
+      continue; // skip the rest
       // abs_setup.absinfo.maximum = 32767;
       // abs_setup.absinfo.minimum = -32767;
     } // only setup the dpad (the analog is not important for our current
@@ -82,6 +82,9 @@ AIPlayerController::AIPlayerController()
   snprintf(setup.name, UINPUT_MAX_NAME_SIZE, "AI Player Controller");
   ioctl(fd_virtual_device, UI_DEV_SETUP, &setup);
   ioctl(fd_virtual_device, UI_DEV_CREATE);
+  printf("\nVIRTUAL CONTROLLER || AI PLAYER CONTROLLER");
+  printf("\nCopyleft @ LeAnnAlexandra 2023 - 2024\n");
+  // printf("\nController initialised\n");
   printf("\nController initialised\n");
 }
 
@@ -221,7 +224,9 @@ void AIPlayerController::sync() {
 }
 // debug:
 // cli_control();
-void AIPlayerController::sendKeyPress(int key, int millisecond_delay = 150) { // this method can now be used to "hold" a button with milliscond accuracy. 
+void AIPlayerController::sendKeyPress(
+    int key, int millisecond_delay) { // this method can now be used to "hold" a
+                                      // button with milliscond accuracy.
   setButtonState(key, true);
   usleep(millisecond_delay *
          1000); // uses the delay atop *1000 for milliseconds delay - can be
@@ -230,12 +235,31 @@ void AIPlayerController::sendKeyPress(int key, int millisecond_delay = 150) { //
 }
 void AIPlayerController::cli_control() {
   int ms_delay = 150;
+  std::cout << "\nWelcome to the CLI interface.\n";
+  std::cout << "Please enter one of the following options:\n";
+  std::cout << "- 'a': Press A button\n";
+  std::cout << "- 'b': Press B button\n";
+  std::cout << "- 'x': Press X button\n";
+  std::cout << "- 'y': Press Y button\n";
+  std::cout << "- 'lb': Press Left Bumper\n";
+  std::cout << "- 'rb': Press Right Bumper\n";
+  std::cout << "- 'select': Press Select button\n";
+  std::cout << "- 'start': Press Start button\n";
+  std::cout << "- 'up': Move Up\n";
+  std::cout << "- 'down': Move Down\n";
+  std::cout << "- 'left': Move Left\n";
+  std::cout << "- 'right': Move Right\n";
+  std::cout << "- 'l3': Press Left Joystick (L3)\n";
+  std::cout << "- 'r3': Press Right Joystick (R3)\n";
+  std::cout << "Type your choice and press Enter: ";
+
   while (true) {
     std::string input;
     std::cout << "Enter a command ('qqq' to quit): ";
     std::cin >> input;
 
-    if (input == "qqq") {
+    if (input == "qqq") // I chatgpt'd that secret code from bethesda.
+    {
       std::cout << "Exiting loop..." << std::endl;
       break;
     } else if (input == "a") {
@@ -255,7 +279,7 @@ void AIPlayerController::cli_control() {
       sendKeyPress(AIC_SELECT_B);
     } else if (input == "start") {
       sendKeyPress(AIC_START_B);
-    } else if (input == "elon" || input == "mode") {
+    } else if (input == "elon" || input == "mode") { // elon: X
       sendKeyPress(AIC_MODE_B);
     } else if (input == "up") {
       setAbsoluteValue(AIC_DPAD_Y_A, -1.0f);
@@ -280,13 +304,13 @@ void AIPlayerController::cli_control() {
       sendKeyPress(AIC_R3_B);
     } else {
       // Perform tasks based on input
-      std::cout << "Performing task for input: " << input << std::endl;
+      std::cout << "We're not performing any task. Command: " << input<<" not recognized" << std::endl;
       // Add your task logic here
       // else if (input==""){}
     }
   }
 }
-///TODO: fix the joysticks & triggers:
+/// TODO: fix the joysticks & triggers:
 // void AIPlayerController::setupAbsoluteAxes(int fd_virtual_device) {
 //   for (int button : floatValuesToEnable) {
 //     struct uinput_abs_setup abs_setup;

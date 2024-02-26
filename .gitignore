@@ -1,1 +1,5 @@
 .fuse*
+/lib
+/obj
+/bin
+/build
